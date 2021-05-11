@@ -115,6 +115,14 @@ export const Cell = ({
             <pluto-shoulder draggable="true" title="Drag to move cell">
                 <button
                     onClick=${() => {
+                    }}
+                    class="toggle_md"
+                    title="Toggle markdown/code"
+                >
+                    <span></span>
+                </button>
+                <button
+                    onClick=${() => {
                         let cells_to_fold = selected ? selected_cells : [cell_id]
                         pluto_actions.update_notebook((notebook) => {
                             for (let cell_id of cells_to_fold) {
