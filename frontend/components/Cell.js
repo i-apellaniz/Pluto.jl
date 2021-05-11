@@ -21,7 +21,7 @@ import { PlutoContext } from "../common/PlutoContext.js"
  * */
 export const Cell = ({
     cell_result: { queued, running, runtime, errored, output, published_objects },
-    cell_input: { cell_id, code, code_folded },
+    cell_input: { cell_id, code, code_folded, markdown },
     cell_input_local,
     notebook_id,
     on_update_doc_query,
@@ -105,6 +105,7 @@ export const Cell = ({
                 selected: selected,
                 code_differs: class_code_differs,
                 code_folded: class_code_folded,
+                markdown: markdown,
                 show_input: show_input,
                 drop_target: drag_active,
                 saving_file: saving_file,
@@ -115,6 +116,12 @@ export const Cell = ({
             <pluto-shoulder draggable="true" title="Drag to move cell">
                 <button
                     onClick=${() => {
+                        let markdown_cells = selected ? selected_cells : [cell_id]
+                        pluto_actions.update_notebook((notebook) => {
+                            for (let cell_id of markdown_cells) {
+                                notebook.cell_inputs[cell_id].markdown = !markdown
+                            }
+                        })
                     }}
                     class="toggle_md"
                     title="Toggle markdown/code"

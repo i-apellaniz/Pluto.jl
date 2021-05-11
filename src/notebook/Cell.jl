@@ -26,6 +26,7 @@ Base.@kwdef mutable struct Cell
 
     code::String=""
     code_folded::Bool=false
+    markdown::Bool=false
     
     output::CellOutput=CellOutput()
     queued::Bool=false
@@ -50,6 +51,7 @@ function Base.convert(::Type{Cell}, cell::Dict)
         cell_id=UUID(cell["cell_id"]),
         code=cell["code"],
         code_folded=cell["code_folded"],
+        markdown=cell["markdown"],
     )
 end
 function Base.convert(::Type{UUID}, string::String)

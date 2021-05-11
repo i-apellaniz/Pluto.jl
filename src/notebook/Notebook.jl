@@ -76,6 +76,8 @@ const _notebook_header = "### A Pluto.jl notebook ###"
 const _cell_id_delimiter = "# ╔═╡ "
 const _order_delimiter = "# ╠═"
 const _order_delimiter_folded = "# ╟─"
+const _order_delimiter_markdown = "# ├═"
+const _order_delimiter_markdown_folded = "# ├─"
 const _cell_suffix = "\n\n"
 
 emptynotebook(args...) = Notebook([Cell()], args...)
@@ -113,7 +115,11 @@ function save_notebook(io, notebook::Notebook)
 
     println(io, _cell_id_delimiter, "Cell order:")
     for c in notebook.cells
-        delim = c.code_folded ? _order_delimiter_folded : _order_delimiter
+        if c.code_folded 
+            delim = c.markdown ? _order_delimiter_markdown_folded : _order_delimiter_folded
+        else
+            delim = c.markdown ? _order_delimiter_markdown : _order_delimiter
+        end
         println(io, delim, string(c.cell_id))
     end
     notebook
@@ -179,7 +185,8 @@ function load_notebook_nobackup(io, path)::Notebook
                 UUID(cell_id_str[end - 35:end])
             end
             next_cell = collected_cells[cell_id]
-            next_cell.code_folded = startswith(cell_id_str, _order_delimiter_folded)
+            next_cell.markdown = startswith(cell_id_str, _order_delimiter_markdown[1:end-3]) # remove the last unicode since its irrelevant
+            next_cell.code_folded = startswith(cell_id_str, _order_delimiter_folded) || startswith(cell_id_str, _order_delimiter_markdown_folded)
             push!(ordered_cells, next_cell)
         end
     end
